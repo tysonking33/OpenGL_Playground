@@ -62,15 +62,21 @@ int main()
 
 	GLfloat vertices[] =
 		{
-			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-			0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+			-0.5f, 0.0f, 0.5f,	0.83f, 0.7f, 0.44f,		0.0f, 0.0f,
+			-0.5f, 0.0f, -0.5f,	0.83f, 0.7f, 0.44f,		5.0f, 0.0f,
+			0.5f, 0.0f, -0.5f,	0.83f, 0.7f, 0.44f,		0.0f, 0.0f,
+			0.5f, 0.0f, 0.5f,	0.83f, 0.7f, 0.44f,		5.0f, 0.0f,
+			0.0f, 0.8f, 0.0f,	0.92f, 0.86f, 0.76f,	2.5f, 5.0f
+			};
 
 	GLuint indices[] =
 		{
-			0, 2, 1,
-			0, 3, 2};
+			0,1,2,
+			0,2,3,
+			0,1,4,
+			1,2,4,
+			2,3,4,
+			3,0,4};
 
 	Shader shaderProgram("../res/Shaders/default.vert", "../res/Shaders/default.frag");
 	VAO VAO1;
@@ -88,8 +94,13 @@ int main()
 
 	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
 
-	Texture bean("../res/Textures/bean.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture bean("../res/Textures/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
 	bean.texUnit(shaderProgram, "tex0", 0);
+
+	float rotation = 0.0f;
+	double prevTime = glfwGetTime();
+
+	glEnable(GL_DEPTH_TEST);
 
 	// This is the render loop
 	while (!glfwWindowShouldClose(window))
@@ -98,13 +109,22 @@ int main()
 
 		// Druids are the best
 		glClearColor(0.00f, 0.49f, 0.04f, 1.00f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shaderProgram.Activate();
+
+		double crntTime = glfwGetTime();
+		if (crntTime - prevTime >= 1/60)
+		{
+			rotation += 0.5f;
+			prevTime = crntTime;
+		}
 
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 proj = glm::mat4(1.0f);
+
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
 		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
 		proj = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f);
 
@@ -119,7 +139,7 @@ int main()
 		bean.Bind();
 		VAO1.Bind();
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(int), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
