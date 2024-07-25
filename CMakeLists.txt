@@ -33,10 +33,30 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Set directory paths
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source)
+set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-set(sources ${SOURCE_DIR}/main.cpp)
+# Add all source files
+set(sources 
+	${SOURCE_DIR}/main.cpp
+	${SOURCE_DIR}/EBO.cpp
+	${SOURCE_DIR}/VAO.cpp
+	${SOURCE_DIR}/VBO.cpp
+	${SOURCE_DIR}/shaderClass.cpp
+	${SOURCE_DIR}/stb_image.cpp
+	${SOURCE_DIR}/Texture.cpp
+)
+
+# Add all header files
+set(headers
+	${INCLUDE_DIR}/EBO.h
+	${INCLUDE_DIR}/VAO.h
+	${INCLUDE_DIR}/VBO.h
+	${INCLUDE_DIR}/shaderClass.h
+	${INCLUDE_DIR}/stb_image.h
+	${INCLUDE_DIR}/Texture.h
+)
 
 add_executable(opengl-template ${sources} ${includes})
 
@@ -46,6 +66,9 @@ LinkGLFW(opengl-template PRIVATE)
 
 include(${CMAKE_DIR}/LinkGLAD.cmake)
 LinkGLAD(opengl-template PRIVATE)
+
+include(${CMAKE_DIR}/LinkGLM.cmake)
+LinkGLM(opengl-template PRIVATE)
 
 find_package(OpenGL REQUIRED)
 if (OpenGL_FOUND)
