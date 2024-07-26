@@ -46,6 +46,7 @@ set(sources
 	${SOURCE_DIR}/shaderClass.cpp
 	${SOURCE_DIR}/stb_image.cpp
 	${SOURCE_DIR}/Texture.cpp
+	${SOURCE_DIR}/Camera.cpp
 )
 
 # Add all header files
@@ -56,6 +57,7 @@ set(headers
 	${INCLUDE_DIR}/shaderClass.h
 	${INCLUDE_DIR}/stb_image.h
 	${INCLUDE_DIR}/Texture.h
+	${INCLUDE_DIR}/Camera.h
 )
 
 add_executable(opengl-template ${sources} ${includes})
