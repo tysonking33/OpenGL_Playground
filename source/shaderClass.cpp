@@ -55,7 +55,7 @@ void Shader::Delete()
 	glDeleteProgram(ID);
 }
 
-void Shader::compileErrors(unsigned int shader, const char *type)
+int Shader::compileErrors(unsigned int shader, const char *type)
 {
 	GLint hasCompiled;
 	char infoLog[1024];
@@ -66,6 +66,7 @@ void Shader::compileErrors(unsigned int shader, const char *type)
 		{
 			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
 			std::cout << "SHADER_COMPILATION_ERROR for:" << type << "\n" << std::endl;
+			return -1;
 		}
 	}
 	else
@@ -75,8 +76,10 @@ void Shader::compileErrors(unsigned int shader, const char *type)
 		{
 			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
 			std::cout << "SHADER_LINKING_ERROR for:" << type << "\n" << std::endl;
+			return -2;
 		}
 	}
 
+	return 1;
 }
 
